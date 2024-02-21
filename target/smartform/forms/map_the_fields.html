@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="/smartform/forms/map_the_fields_style.css"/>
+<div class="welcome-header">
+    <i class="fas fa-applause welcome-icon"></i>
+    <div class="welcome-text">
+        <h1>Welcome to Smart Form</h1>
+    </div>
+</div>
+<div class="form-container">
+    <form role="form" name="smartFieldMappingForm" class="form-horizontal">
+        <table id="smartFieldTable">
+            <tr class="highlighted-row">
+                <th>FMP FIELDS</th>
+                <th>YOUR FIELDS {{fieldHeaders}}</th>
+            </tr>
+
+        </table>
+        <input type="hidden" id="fieldMapping" cam-variable-name="fieldMapping"  cam-variable-type="String" />
+    </form>
+
+    <script src="/smartform/forms/customScript.js"></script>
+
+</div>

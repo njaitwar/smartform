@@ -1,0 +1,121 @@
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Sky Blue */
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .form-container {
+            margin: 50px 10%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+
+        h2 {
+            color: #b03060; /* Maroon */
+            text-align: center;
+            padding: 10px;
+            background-color: #66D3FA; /* Dark Red */
+            border-radius: 8px;
+        }
+
+        .select-control {
+            position: relative;
+            width: calc(100% - 20px);
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .select-control select {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: transparent;
+            outline: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .icon {
+            position: relative;
+            transform: translateY(-10%);
+            margin-right: 10px;
+            color: #ff6961; /* Light Red */
+        }
+
+         /* Add the following style rule to set the background color of the specified row */
+        tr.highlighted-row {
+            background-color: #ffffcc; /* Light Yellow */
+        }
+        /* Add this style rule for the submit button */
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50; /* Green */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+         /* Modify the following style rule for the welcome header */
+        .welcome-header {
+            background-color: #66D3FA; /* Dark Red */
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            color: #b03060; /* Maroon */
+            position: relative;
+        }
+
+        .welcome-icon {
+            margin-right: 10px;
+            color: #ff6961; /* Light Red */
+        }
+
+        .welcome-text {
+            display: inline-block;
+        }
+
+        .running-words-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .running-words {
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            animation: running-words-animation 5s linear infinite;
+        }
+
+        @keyframes running-words-animation {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }

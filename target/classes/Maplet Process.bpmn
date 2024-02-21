@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1tlw6pn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.17.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <bpmn:process id="smartform" name="Get Smart Form Fields&#10;" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="get_id_or_data" name="ID / Data&#10;">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="customerId" value="${customerId}" />
+          <camunda:property name="data" value="${data}" />
+          <camunda:property name="token" value="${token}" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_076uh69</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_10lbdyz">
+      <bpmn:incoming>Flow_076uh69</bpmn:incoming>
+      <bpmn:outgoing>only_id</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0wjpgj2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_076uh69" sourceRef="get_id_or_data" targetRef="Gateway_10lbdyz" />
+    <bpmn:sequenceFlow id="only_id" name="Only ID" sourceRef="Gateway_10lbdyz" targetRef="Activity_1o6re4l">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"> ${customerId != null &amp;&amp; data == null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0wjpgj2" sourceRef="Gateway_10lbdyz" targetRef="smart_form_list">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${customerId !=null &amp;&amp; data !=null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_0zdml0w">
+      <bpmn:incoming>Flow_0mx1ydv</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="mapping_saved" name="Save the Mapping">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">https://app.bluealgo.com/fmp/api/impexp/SaveMapping</camunda:inputParameter>
+            <camunda:inputParameter name="payload">{
+  "customerId": ${customerId},
+  "ExcelId": "791",
+  "ModuleId": "5",
+  "Mapping": ${fieldMapping}
+}</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="hearders">
+              <camunda:map>
+                <camunda:entry key="Authorization">Bearer ${token}</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="saveApiResponseData">${response}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0scpy47</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mx1ydv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0scpy47" sourceRef="fileds_mapping" targetRef="mapping_saved" />
+    <bpmn:sequenceFlow id="Flow_0mx1ydv" sourceRef="mapping_saved" targetRef="Event_0zdml0w" />
+    <bpmn:userTask id="fileds_mapping" name="Map the Fields" camunda:formKey="embedded:app:forms/map_the_fields.html">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_01iwzqs</bpmn:incoming>
+      <bpmn:outgoing>Flow_0scpy47</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_13vybpr" sourceRef="Activity_1o6re4l" targetRef="smart_form_list" />
+    <bpmn:serviceTask id="Activity_1o6re4l" name="Get Data" camunda:expression="${data != null}" camunda:resultVariable="isData">
+      <bpmn:incoming>only_id</bpmn:incoming>
+      <bpmn:outgoing>Flow_13vybpr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="smart_form_list" name="Get Smart Form Field">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">https://app.bluealgo.com/fmp/api/impexp/GetModuleHeaders</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="payload">{
+  "customerId": "fmpcommonspace@gmail.com",
+  "ModuleName": "customer"
+}</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Authorization">Bearer ${token}</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="responseData">${response}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wjpgj2</bpmn:incoming>
+      <bpmn:incoming>Flow_13vybpr</bpmn:incoming>
+      <bpmn:outgoing>Flow_01iwzqs</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_01iwzqs" sourceRef="smart_form_list" targetRef="fileds_mapping" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="smartform">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="get_id_or_data" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="177" y="142" width="44" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_10lbdyz_di" bpmnElement="Gateway_10lbdyz" isMarkerVisible="true" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
+        <dc:Bounds x="265" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0zdml0w_di" bpmnElement="Event_0zdml0w" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <dc:Bounds x="852" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="857" y="142" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10lkkxs_di" bpmnElement="mapping_saved" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="690" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17ozk7f_di" bpmnElement="fileds_mapping" bioc:stroke="#5b176d" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#5b176d">
+        <dc:Bounds x="530" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yqudbb_di" bpmnElement="Activity_1o6re4l" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="240" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0e2hsz2_di" bpmnElement="smart_form_list" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
+        <dc:Bounds x="370" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_076uh69_di" bpmnElement="Flow_076uh69">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="265" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1t4gdz0_di" bpmnElement="only_id">
+        <di:waypoint x="290" y="142" />
+        <di:waypoint x="290" y="220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="241" y="173" width="37" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wjpgj2_di" bpmnElement="Flow_0wjpgj2">
+        <di:waypoint x="315" y="117" />
+        <di:waypoint x="370" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0scpy47_di" bpmnElement="Flow_0scpy47">
+        <di:waypoint x="630" y="117" />
+        <di:waypoint x="690" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mx1ydv_di" bpmnElement="Flow_0mx1ydv">
+        <di:waypoint x="790" y="117" />
+        <di:waypoint x="852" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13vybpr_di" bpmnElement="Flow_13vybpr">
+        <di:waypoint x="340" y="260" />
+        <di:waypoint x="420" y="260" />
+        <di:waypoint x="420" y="157" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01iwzqs_di" bpmnElement="Flow_01iwzqs">
+        <di:waypoint x="470" y="117" />
+        <di:waypoint x="530" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
